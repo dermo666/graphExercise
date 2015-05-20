@@ -28,5 +28,4 @@ if (empty($filename)) {
         
         echo "$path\n";
     }
-    
 }
