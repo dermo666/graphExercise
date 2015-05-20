@@ -21,7 +21,8 @@ class PathFinder
                 $this->pathList[$from] = [];
             }
             
-            $this->pathList[$from][$to] = $latency; 
+            $this->pathList[$from][$to] = $latency;
+            $this->pathList[$to][$from] = $latency;
         }
     }
     
@@ -30,7 +31,7 @@ class PathFinder
         $currentPath  = [];
         $totalLatency = 0;
         
-        $resultNodes = $this->finder($from, $to, $currentPath, $totalLatency);
+        $resultNodes = $this->finder($from, $to, $currentPath, $totalLatency, $timeLimit);
      
         $resultMessage = '';
         
@@ -43,13 +44,13 @@ class PathFinder
         return $resultMessage;
     }
     
-    private function finder($from, $to, $currentPath, $totalLatency)
+    private function finder($from, $to, $currentPath, $totalLatency, $timeLimit)
     {
         $currentPath[] = $from;
         
         if (isset($this->pathList[$from])) {
             foreach ($this->pathList[$from] as $nextNode => $latency) {
-                
+                // Return path with total latency when correct node has been found.
                 if ($nextNode == $to) {
                     $totalLatency  += $latency;
                     $currentPath[]  =  $to;
@@ -57,10 +58,15 @@ class PathFinder
                     
                     return $currentPath;
                 } else { 
-                    // TODO: Prevent infinite loop by checking visited nodes.
-                    $totalLatency += $latency;
-                    $result = $this->finder($nextNode, $to, $currentPath, $totalLatency);
-                    if (is_array($result)) {
+                    // Prevent infinite loop by checking visited nodes.
+                    if (in_array($nextNode, $currentPath)) {
+                        continue;
+                    }
+                    
+                    $result = $this->finder($nextNode, $to, $currentPath, $totalLatency + $latency, $timeLimit);
+                    
+                    // Check the time limit otherwise continue.
+                    if (is_array($result) && end($result) < $timeLimit) {
                         return $result;
                     }
                 }
