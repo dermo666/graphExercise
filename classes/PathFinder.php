@@ -45,18 +45,20 @@ class PathFinder
     
     private function finder($from, $to, $currentPath, $totalLatency)
     {
-        $currentPath[]  = $from;
+        $currentPath[] = $from;
         
         if (isset($this->pathList[$from])) {
             foreach ($this->pathList[$from] as $nextNode => $latency) {
+                
                 if ($nextNode == $to) {
-                    $totalLatency  =+ $latency;
-                    $currentPath[] =  $to;
-                    $currentPath[] =  $latency;
+                    $totalLatency  += $latency;
+                    $currentPath[]  =  $to;
+                    $currentPath[]  =  $totalLatency;
                     
                     return $currentPath;
                 } else { 
                     // TODO: Prevent infinite loop by checking visited nodes.
+                    $totalLatency += $latency;
                     $result = $this->finder($nextNode, $to, $currentPath, $totalLatency);
                     if (is_array($result)) {
                         return $result;

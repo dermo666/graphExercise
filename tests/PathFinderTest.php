@@ -28,7 +28,7 @@ class PathFinderTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($this->pathList, $pathFinder->getPathList());
     }
     
-    public function testPathFinderFindsCorrectNode()
+    public function testPathFinderFindsImmediateNode()
     {
         $pathFinder = new PathFinder($this->lines);
         
@@ -36,4 +36,14 @@ class PathFinderTest extends PHPUnit_Framework_TestCase
     
         $this->assertEquals('A => B => 10', $path);
     }
+    
+    public function testPathFinderFindRemoteNode()
+    {
+        $pathFinder = new PathFinder($this->lines);
+    
+        $path = $pathFinder->findPath('A', 'D', 200);
+    
+        $this->assertEquals('A => B => D => 110', $path);
+    }    
+    
 }
