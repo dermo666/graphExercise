@@ -66,7 +66,7 @@ class PathFinder
                     $result = $this->finder($nextNode, $to, $currentPath, $totalLatency + $latency, $timeLimit);
                     
                     // Check the time limit otherwise continue.
-                    if (is_array($result) && end($result) < $timeLimit) {
+                    if (is_array($result) && end($result) <= $timeLimit) {
                         return $result;
                     }
                 }
